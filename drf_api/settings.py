@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from datetime import timedelta
 
 if os.path.exists('env.py'):
     import env
@@ -46,6 +47,19 @@ JWT_AUTH_SECURE = True
 JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
+
+if (
+    'ACCESS_TOKEN_LIFETIME' in os.environ and
+    'REFRESH_TOKEN_LIFETIME' in os.environ
+):
+    SIMPLE_JWT = {
+        'ACCESS_TOKEN_LIFETIME': timedelta(
+            seconds=int(os.environ.get('ACCESS_TOKEN_LIFETIME'))
+        ),
+        'REFRESH_TOKEN_LIFETIME': timedelta(
+            seconds=int(os.environ.get('REFRESH_TOKEN_LIFETIME'))
+        ),
+    }
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'drf_api.serializers.CurrentUserSerializer'
